@@ -1,0 +1,64 @@
+Week 2 Progress Report
+Course: STATS201
+Project Topic: Visual Analysis of Protest-Related Imagery in News Media
+
+Project GitHub Link:
+https://github.com/TemurAkhtamjonov/STATS201_project
+
+
+Research Question and Machine Learning Task
+
+This project examines whether visual features of news images can be used to identify protest-related content in political communication. The central research question is:
+
+Can image-based features predict whether a news image depicts crowd presence, used here as a proxy for protest-related imagery?
+
+The machine learning task is formulated as a binary classification problem. The objective is to predict whether an image contains a visible crowd (iscrowd = 1) or not (iscrowd = 0). In later stages of the project, visual feature representations extracted from images will be used as inputs to classification models.
+
+
+Dataset Description and Unit of Analysis
+
+The data used in this project comes from the replication materials associated with Torres (2024), which studied visual framing in news coverage of the migrant caravan. The full dataset includes images and large feature files totaling approximately 6.5 GB. Due to size constraints, these files are stored externally and are not tracked directly in the GitHub repository.
+
+For Week 2,the  analysis focuses on the metadata file "metadata_caravan_media_short.csv", which is loaded and explored in the Week 2 exploratory notebook.
+
+The unit of analysis is a single news image. Each row in the metadata corresponds to one image and includes information about the associated article, news outlet, publication date, and hand-coded labels. The dataset contains 688 images and 15 metadata variables.
+
+Key variables include image and article identifiers, outlet information, ideological classification, article title and description text, and binary indicators such as iscrowd (crowd presence) and istrump.
+
+
+Exploratory Data Analysis
+
+Initial exploratory analysis was conducted using Google Colab and is documented in the notebook "week2_eda.ipynb". The analysis includes inspection of dataset dimensions, examination of the first and last few rows of the metadata, and verification of variable structure.
+
+To assess the main outcome variable, the distribution of the crowd presence indicator (iscrowd) was examined. Figure 1 (see "figures/label_distribution.png") shows the number of images with and without visible crowd presence. The distribution indicates that images containing crowds are less frequent than images without crowds, suggesting a degree of class imbalance that will need to be considered in later modeling stages.
+
+
+Access to Data and Analysis Materials
+
+For reproducibility and transparency, the exploratory notebook and dataset are accessible online. The Week 2 exploratory analysis notebook can be viewed via Google Colab at the following link:
+
+https://colab.research.google.com/drive/16AZlf4E0pTvcaOJQFYYpCzv8uDM_a8-_#scrollTo=zYNDU4pF61zL
+
+The full replication dataset, including metadata, images, and feature files, is available via Google Drive at:
+
+https://drive.google.com/drive/folders/1_EA2hMWBHYXhxKx_hGfaqKbFpd3fvr-I
+
+
+Progress Summary and Next Steps
+
+At this stage, the project has clearly defined the research question, machine learning task, and unit of analysis. Exploratory analysis confirms that the metadata are suitable for downstream modeling and that the iscrowd variable provides a meaningful binary outcome for classification.
+
+In the next stage of the project, visual feature representations from the accompanying HDF5 files will be incorporated, and baseline classification models will be implemented to predict crowd presence from image features.
+
+
+Division of Responsibilities
+
+This is a solo project.
+
+Student: Temur Akhtamjonov
+Primary responsibility:
+- Defined the research question and machine learning task
+- Identified and documented the dataset and unit of analysis
+- Performed exploratory data analysis in Google Colab
+- Generated and interpreted the label distribution figure
+- Organized the GitHub repository and project documentation
