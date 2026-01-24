@@ -1,1 +1,5 @@
+#Week 2 Collab Notebook:
 https://colab.research.google.com/drive/16AZlf4E0pTvcaOJQFYYpCzv8uDM_a8-_#scrollTo=zYNDU4pF61zL
+
+#Week 3 Collab Notebook:
+https://colab.research.google.com/drive/1n7k6R5bAs274ZNCcv-ckoQO0DQK9VgDW#scrollTo=xF2iV7mY0WIR
