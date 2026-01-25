@@ -81,7 +81,7 @@ Latest run (one-hot + logistic regression with `class_weight="balanced"`; strati
 | Model | Accuracy | F1 (class 1) | Balanced Acc | ROC-AUC | Notes |
 |---|---:|---:|---:|---:|---|
 | Majority baseline | 0.788 | 0.000 | 0.500 | N/A | Predicts all 0 (no crowds) |
-| Cluster-rate baseline (p(y=1|cluster), thr=0.5) | 0.872 | 0.722 | 0.841 | N/A | Uses train cluster positive rates |
+| Cluster-rate baseline | 0.872 | 0.722 | 0.841 | N/A | Uses train cluster positive rates |
 | Logistic (one-hot clusters, balanced) | 0.872 | 0.722 | 0.841 | 0.895 | Uses `predicted_labels` as categorical |
 
 **Confusion matrix (logistic):**  
