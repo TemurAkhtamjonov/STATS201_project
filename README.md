@@ -87,6 +87,9 @@ Latest run (one-hot + logistic regression with `class_weight="balanced"`; strati
 **Confusion matrix (logistic):**  
 TN=110, FP=13, FN=7, TP=26
 
+**Confusion matrix (logistic regression baseline):**  
+![Week 3 confusion matrix](figures/confusion_matrix_logistic.png)
+
 **5-fold CV (StratifiedKFold) F1 mean:** 0.717 (std: 0.067)
 
 ## How to Reproduce (Colab)
