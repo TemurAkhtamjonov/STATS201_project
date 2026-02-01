@@ -92,6 +92,44 @@ TN=110, FP=13, FN=7, TP=26
 
 **5-fold CV (StratifiedKFold) F1 mean:** 0.717 (std: 0.067)
 
+## Week 4 Progress (Feature Construction & Model Comparison)
+
+**Goal.** Compare multiple representations/models for predicting `iscrowd` using the Torres replication data.
+
+### Data + Features
+- **Base representation:** `predicted_labels` (cluster ID from `clusters_preds_caravan_newsapi.csv`)
+- **Extended representation:** `predicted_labels + newspaperid + ideol_allsides + topicality`
+  - `topicality` had missing values, so we compared:
+    - **Dropna** (remove rows with missing topicality)
+    - **Median imputation** (fill missing topicality with the median to keep all rows)
+
+### Models Compared (70/30 split, stratified, random_state=42)
+- Majority-class baseline
+- Logistic Regression (cluster-only)
+- Logistic Regression (cluster + metadata, dropna)
+- Logistic Regression (cluster + metadata, median-imputed)
+- Decision Tree (median-imputed)
+- Random Forest (median-imputed)
+- Logistic Regression with **threshold tuning** (optimize F1 for class 1)
+
+### Key Results (class 1 = `iscrowd`)
+| Model | Acc | Prec_1 | Rec_1 | F1_1 |
+|---|---:|---:|---:|---:|
+| RandomForest (imputed) | 0.910 | 0.771 | 0.818 | 0.794 |
+| LogReg (imputed) tuned thr=0.65 | 0.897 | 0.730 | 0.818 | 0.771 |
+| LogReg cluster+meta (median-impute) | 0.872 | 0.651 | 0.848 | 0.737 |
+| LogReg cluster-only | 0.872 | 0.667 | 0.788 | 0.722 |
+| DecisionTree (imputed) | 0.865 | 0.636 | 0.848 | 0.727 |
+| LogReg cluster+meta (dropna) | 0.862 | 0.647 | 0.759 | 0.698 |
+| Majority baseline | 0.788 | 0.000 | 0.000 | 0.000 |
+
+### Model Comparison Figure
+![Week 4 model comparison](figures/week4_model_comparison.png)
+
+### Code
+Week 4 notebook:
+- `notebooks/week4.ipynb`
+
 ## How to Reproduce (Colab)
 
 ### Requirements
