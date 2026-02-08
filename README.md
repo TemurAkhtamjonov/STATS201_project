@@ -218,5 +218,5 @@ In Week 6, these insights motivate combining face-based signals with learned vis
    drive.mount('/content/drive')
 
 ### Links 
-- Colab notebook: https://colab.research.google.com/drive/1n7k6R5bAs274ZNCcv-ckoQO0DQK9VgDW?usp=sharing
+- Colab notebook: Find All Google Colab Notebooks in the "notebooks" folder
 - Data folder in Drive: https://drive.google.com/drive/folders/1_EA2hMWBHYXhxKx_hGfaqKbFpd3fvr-I?usp=drive_link
