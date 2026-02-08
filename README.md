@@ -130,6 +130,78 @@ TN=110, FP=13, FN=7, TP=26
 Week 4 notebook:
 - `notebooks/week4.ipynb`
 
+## Week 5 – Diagnostics, Errors, and Robustness (Image-Based Analysis)
+
+### Goal
+The goal of Week 5 was to **diagnose model behavior and failure modes** by introducing an explicit image-based representation and evaluating its robustness. Unlike earlier weeks, which relied on precomputed visual clusters and metadata, this week directly processes raw images to extract an interpretable signal: **the number of detected faces in each image**.
+
+This enables targeted error analysis and sensitivity checks using a simple, human-interpretable visual heuristic.
+
+### Image-Based Feature: Face Count
+We applied a pretrained **MTCNN face detection model** to all available images (N = 517).  
+For each image, we extracted the following features:
+
+- `face_count`: total number of detected faces  
+- `face_count_hi`: number of high-confidence detections  
+- `max_face_prob`: maximum detection confidence in the image  
+
+This representation directly reflects the intuition that crowd images contain more visible faces, while remaining independent of text or metadata cues.
+
+### Diagnostic Analysis: Distribution by Label
+We first examined how detected face counts differ between crowd and non-crowd images.
+
+![Face count distribution by crowd label](figures/facecount_by_label_boxplot.png)
+
+**Observation:**
+- Images labeled `iscrowd = 1` exhibit substantially higher face counts on average.
+- The distribution is highly skewed, with extreme outliers (up to 400+ faces).
+- A log scale is required to visualize variability, indicating rare but very large gatherings.
+
+This confirms that face count is a meaningful but noisy visual signal.
+
+### Robustness Check: Threshold Sensitivity
+We evaluated a simple rule-based classifier:
+
+> Predict `iscrowd = 1` if `face_count ≥ K`
+
+We swept thresholds \( K \in [0, 50] \) and evaluated F1 score on both training and test splits.
+
+![Sensitivity of face-count threshold](figures/k_sweep_f1_train_test.png)
+
+**Observation:**
+- Performance is highly sensitive to the choice of threshold \( K \).
+- The optimal threshold on the training set is **K = 6**.
+- Performance degrades sharply for larger thresholds, revealing brittleness.
+
+This highlights the instability of hard decision rules and motivates more flexible modeling approaches.
+
+### Error Analysis: Confusion Matrix (K = 6)
+Using the best-performing threshold \( K = 6 \), we evaluated test-set errors.
+
+![Confusion matrix for K=6](figures/confusion_matrix_k6_test.png)
+
+**Findings:**
+- False positives often correspond to images with many visible faces but no labeled crowd (e.g., collages, repeated faces, studio audiences).
+- False negatives include crowd scenes where faces are small, occluded, or viewed from a distance.
+
+This demonstrates that face count alone cannot reliably capture crowd semantics.
+
+### Failure Modes and Bias
+Key failure modes identified:
+- **Overcounting:** repeated faces, posters, or screens inflate face counts.
+- **Undercounting:** distant or occluded crowds yield few detections.
+- **Context blindness:** face count ignores spatial layout and interaction between people.
+
+These issues highlight how naive visual heuristics can encode systematic bias.
+
+### Implications and Next Steps
+Week 5 diagnostics show that:
+- Image-based features provide strong, interpretable signals.
+- Simple rules are brittle and sensitive to parameter choice.
+- Error analysis reveals where visual heuristics fail semantically.
+
+In Week 6, these insights motivate combining face-based signals with learned visual representations (e.g., CNN features) to improve robustness and generalization.
+
 ## How to Reproduce (Colab)
 
 ### Requirements
