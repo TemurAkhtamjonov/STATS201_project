@@ -200,7 +200,77 @@ Week 5 diagnostics show that:
 - Simple rules are brittle and sensitive to parameter choice.
 - Error analysis reveals where visual heuristics fail semantically.
 
-In Week 6, these insights motivate combining face-based signals with learned visual representations (e.g., CNN features) to improve robustness and generalization.
+# Week 6 – Synthesis & Final Model
+
+## Goal
+
+The goal of Week 6 was to synthesize all prior modeling stages into a single final model and justify stopping. Earlier weeks focused on isolated representations (visual clusters, metadata, or face-count heuristics). In this stage, all components were integrated into one interpretable hybrid model.
+
+The emphasis shifted from experimentation to consolidation, interpretation, and communication readiness.
+
+## Final Model Specification
+
+The final model is a **logistic regression classifier** combining:
+
+### Visual Representation
+- `predicted_labels` (image cluster ID)
+
+### Contextual Metadata
+- `newspaperid`
+- `ideol_allsides`
+- `topicality` (median-imputed)
+
+### Image-Based Features
+- `face_count`
+- `face_count_hi`
+- `max_face_prob`
+
+Processing steps:
+- Categorical variables → one-hot encoded  
+- Numeric variables → passed through directly  
+- 70/30 stratified train–test split (`random_state=42`)  
+- `class_weight="balanced"` to handle label imbalance  
+
+## Final Results
+
+Final model performance on the held-out test set:
+
+- **Accuracy:** ~0.92  
+- **F1 score (crowd class):** ~0.83  
+- **Balanced accuracy:** improved relative to earlier models  
+
+![Final Confusion Matrix](figures/confusion_matrix_final_model.png)
+
+### Interpretation
+
+Compared to earlier stages:
+
+- The face-count threshold rule was interpretable but brittle.
+- The cluster-only model captured recurring visual patterns but ignored context.
+- The hybrid model integrates visual density, outlet framing, and contextual metadata.
+
+The final model reduces both false positives (face overcounting errors) and false negatives (small or distant crowds) relative to simpler approaches.
+
+## Justification for Stopping
+
+Model development stopped at this stage because:
+
+- Face-based features yielded meaningful performance improvements.
+- Additional complexity (e.g., CNN training) risks overfitting given N ≈ 517.
+- The hybrid model balances interpretability and predictive strength.
+- Diagnostic checks did not reveal dominant systematic failure modes requiring further revision.
+
+The objective was not to maximize raw accuracy, but to produce an interpretable model that clarifies how visual and contextual signals jointly influence crowd labeling.
+
+## Substantive Takeaway
+
+Crowd identification in protest imagery is not purely visual.
+
+- Visual density (faces, cluster structure) matters.
+- Media context (outlet and ideology) influences predictions.
+- Combining signals produces more stable performance than any single representation alone.
+
+This concludes the modeling pipeline from baseline heuristics to a consolidated final model.
 
 ## How to Reproduce (Colab)
 
