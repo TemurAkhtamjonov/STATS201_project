@@ -3,6 +3,16 @@
 ## Project Overview
 This project studies how political protests are visually framed in news images. Using computer vision and machine learning, we test whether image-derived features can help identify visual framing patterns in political images and test whether simple visual proxies (e.g., crowd presence) can be predicted from image-derived signals.
 
+## Project Trajectory
+
+This project progressed from:
+1. Baseline visual clustering
+2. Metadata-enhanced modeling
+3. Image-based diagnostics
+4. Integrated final modeling
+
+Each stage was designed to test how representation choices alter model behavior and interpretation.
+
 ## Research Question
 **What visual patterns characterize protest images, and can these patterns be used to classify images as protest-related?**
 
@@ -251,6 +261,34 @@ Compared to earlier stages:
 
 The final model reduces both false positives (face overcounting errors) and false negatives (small or distant crowds) relative to simpler approaches.
 
+---
+
+# Final Model Summary
+
+After iterative development across Weeks 3–6, the final model integrates:
+
+### Final Feature Representation
+- `predicted_labels` (visual cluster ID)
+- `newspaperid` (media outlet)
+- `ideol_allsides` (ideological category)
+- `topicality` (median-imputed numeric)
+- `face_count`
+- `face_count_hi`
+- `max_face_prob`
+
+This combines:
+- Unsupervised visual structure
+- Contextual media metadata
+- Direct image-based signals
+
+### Final Model
+Logistic Regression (`class_weight="balanced"`)
+
+We retain logistic regression for:
+- Interpretability
+- Stability
+- Controlled comparison across weeks
+
 ## Justification for Stopping
 
 Model development stopped at this stage because:
@@ -270,7 +308,58 @@ Crowd identification in protest imagery is not purely visual.
 - Media context (outlet and ideology) influences predictions.
 - Combining signals produces more stable performance than any single representation alone.
 
-This concludes the modeling pipeline from baseline heuristics to a consolidated final model.
+# Model Evolution
+
+| Week | Representation | Model | Goal |
+|------|---------------|--------|------|
+| Week 3 | Clusters only | Logistic | Baseline |
+| Week 4 | Clusters + metadata | Logistic | Representation comparison |
+| Week 5 | Face-based heuristic | Threshold rule | Diagnostics |
+| Week 6 | All features combined | Logistic | Final synthesis |
+
+This progression demonstrates how representation changes model behavior.
+
+# Why We Stop Here
+
+We stop development at this point for three reasons:
+
+1. Performance improvements plateau.
+2. The final model balances interpretability and predictive power.
+3. The project goal was diagnostic and comparative — not state-of-the-art optimization.
+
+Further deep learning experimentation (e.g., CNN fine-tuning) would increase complexity without clear theoretical justification given the dataset size (N = 517).
+
+# Substantive Interpretation
+
+The results suggest:
+
+- Visual clusters capture meaningful protest-related patterns.
+- Contextual media features shift decision boundaries.
+- Face detection provides interpretable but noisy signal.
+- Crowd detection cannot be reduced to a single visual cue.
+
+Protest framing emerges from a combination of image content and institutional context.
+
+# Scope
+
+This model is intended for:
+
+- Media research
+- Archival filtering of protest images
+- Academic analysis of visual framing
+
+It is **not** designed for:
+- Real-time surveillance
+- General-purpose crowd detection
+- High-stakes automated deployment
+
+# Limitations
+
+- Face detection fails in distant or occluded crowds.
+- Cluster labels are unsupervised and may encode noise.
+- Metadata may proxy unobserved institutional bias.
+- Dataset size limits deep learning exploration.
+- Results may not generalize beyond this corpus.
 
 ## How to Reproduce (Colab)
 
