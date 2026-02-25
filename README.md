@@ -1,20 +1,16 @@
-# Visual Framing of Political Protest Images
+# Predicting Crowd Presence in News Images
 
 ## Project Overview
-This project studies how political protests are visually framed in news images. Using computer vision and machine learning, we test whether image-derived features can help identify visual framing patterns in political images and test whether simple visual proxies (e.g., crowd presence) can be predicted from image-derived signals.
+This project predicts **crowd presence** in news images.
 
-## Project Trajectory
+The target variable (`iscrowd`) indicates whether an image contains a visible crowd. Importantly, this is **not a protest classifier**. The model predicts crowd presence as a visual proxy and does not distinguish protest crowds from other types of gatherings.
 
-This project progressed from:
-1. Baseline visual clustering
-2. Metadata-enhanced modeling
-3. Image-based diagnostics
-4. Integrated final modeling
-
-Each stage was designed to test how representation choices alter model behavior and interpretation.
+We evaluate whether **face-derived visual features** add predictive signal beyond an **unsupervised cluster-based image representation**.
 
 ## Research Question
-**What visual patterns characterize protest images, and can these patterns be used to classify images as protest-related?**
+**Substantive:** How can we measure **crowd presence** as a component of visual framing in a large corpus of news images?
+
+**Operational:** Can image-derived representations predict whether an image contains a crowd (`iscrowd`)?
 
 ## Machine Learning Task (Week 3 baseline)
 For Week 3, we build **baseline classifiers** for a binary label:
@@ -37,7 +33,7 @@ Key files used so far:
 - `clusters_preds_caravan_newsapi.csv` (cluster label per image filename)
 
 ## Repository Structure
-- `notebooks/` — Colab notebooks (Week 2/3)
+- `notebooks/` — Colab notebooks (Weeks 2–6 + final_model)
 - `figures/` — saved plots (e.g., label distribution)
 - `data/` — (optional) small derived data files only (no large/copyrighted raw media)
 - `reports/` — written report drafts and final submission
@@ -174,7 +170,7 @@ We evaluated a simple rule-based classifier:
 
 > Predict `iscrowd = 1` if `face_count ≥ K`
 
-We swept thresholds \( K \in [0, 50] \) and evaluated F1 score on both training and test splits.
+We swept thresholds K in [0, 50] and evaluated F1 score on both training and test splits.
 
 ![Sensitivity of face-count threshold](figures/k_sweep_f1_train_test.png)
 
@@ -210,25 +206,19 @@ Week 5 diagnostics show that:
 - Simple rules are brittle and sensitive to parameter choice.
 - Error analysis reveals where visual heuristics fail semantically.
 
-# Week 6 – Synthesis & Final Model
+## Week 6 – Synthesis & Final Model (updated)
 
-## Goal
+### Goal
+Synthesize prior stages into a final, interpretable model for predicting `iscrowd` (crowd presence).
 
-The goal of Week 6 was to synthesize all prior modeling stages into a single final model and justify stopping. Earlier weeks focused on isolated representations (visual clusters, metadata, or face-count heuristics). In this stage, all components were integrated into one interpretable hybrid model.
+**Note on metadata models (Week 4):** 
+We explored metadata-augmented models that achieved higher predictive performance, but we exclude metadata from the final model to keep the task visually grounded and aligned with `iscrowd` as a crowd-presence label.
 
-The emphasis shifted from experimentation to consolidation, interpretation, and communication readiness.
-
-## Final Model Specification
-
+### Final Model Specification
 The final model is a **logistic regression classifier** combining:
 
 ### Visual Representation
 - `predicted_labels` (image cluster ID)
-
-### Contextual Metadata
-- `newspaperid`
-- `ideol_allsides`
-- `topicality` (median-imputed)
 
 ### Image-Based Features
 - `face_count`
@@ -236,86 +226,37 @@ The final model is a **logistic regression classifier** combining:
 - `max_face_prob`
 
 Processing steps:
-- Categorical variables → one-hot encoded  
-- Numeric variables → passed through directly  
-- 70/30 stratified train–test split (`random_state=42`)  
-- `class_weight="balanced"` to handle label imbalance  
+- `predicted_labels` → one-hot encoded
+- Numeric face features → passed through directly (missing filled with 0)
+- 70/30 stratified train–test split (`random_state=42`)
+- `class_weight="balanced"` to handle label imbalance
 
-## Final Results
+### Final Results
+Baseline vs final (held-out test set):
 
-Final model performance on the held-out test set:
+| Model | Accuracy | Prec_1 | Rec_1 | F1_1 |
+|---|---:|---:|---:|---:|
+| Baseline (clusters only) | 0.8718 | 0.6667 | 0.7879 | 0.7222 |
+| Final (clusters + faces) | 0.8590 | 0.6170 | 0.8788 | 0.7250 |
 
-- **Accuracy:** ~0.92  
-- **F1 score (crowd class):** ~0.83  
-- **Balanced accuracy:** improved relative to earlier models  
+Interpretation:
+- Face features **increase recall** (more crowd images detected) and slightly increase F1.
+- Precision and overall accuracy decrease slightly, indicating a recall–precision trade-off.
 
-![Final Confusion Matrix](figures/confusion_matrix_final_model.png)
+**Confusion matrix (Final: clusters + faces):**  
+![Confusion matrix (clusters + faces)](figures/confusion_matrix_clusters_faces_model.png)
 
-### Interpretation
-
-Compared to earlier stages:
-
-- The face-count threshold rule was interpretable but brittle.
-- The cluster-only model captured recurring visual patterns but ignored context.
-- The hybrid model integrates visual density, outlet framing, and contextual metadata.
-
-The final model reduces both false positives (face overcounting errors) and false negatives (small or distant crowds) relative to simpler approaches.
-
----
-
-# Final Model Summary
-
-After iterative development across Weeks 3–6, the final model integrates:
-
-### Final Feature Representation
-- `predicted_labels` (visual cluster ID)
-- `newspaperid` (media outlet)
-- `ideol_allsides` (ideological category)
-- `topicality` (median-imputed numeric)
-- `face_count`
-- `face_count_hi`
-- `max_face_prob`
-
-This combines:
-- Unsupervised visual structure
-- Contextual media metadata
-- Direct image-based signals
-
-### Final Model
-Logistic Regression (`class_weight="balanced"`)
-
-We retain logistic regression for:
-- Interpretability
-- Stability
-- Controlled comparison across weeks
-
-## Justification for Stopping
-
-Model development stopped at this stage because:
-
-- Face-based features yielded meaningful performance improvements.
-- Additional complexity (e.g., CNN training) risks overfitting given N ≈ 517.
-- The hybrid model balances interpretability and predictive strength.
-- Diagnostic checks did not reveal dominant systematic failure modes requiring further revision.
-
-The objective was not to maximize raw accuracy, but to produce an interpretable model that clarifies how visual and contextual signals jointly influence crowd labeling.
-
-## Substantive Takeaway
-
-Crowd identification in protest imagery is not purely visual.
-
-- Visual density (faces, cluster structure) matters.
-- Media context (outlet and ideology) influences predictions.
-- Combining signals produces more stable performance than any single representation alone.
+### Substantive Takeaway
+The results support a cautious claim: crowd presence can be predicted from image-derived representations, and face-derived cues increase sensitivity to crowd images, but the improvement is modest and introduces more false positives.
 
 # Model Evolution
 
 | Week | Representation | Model | Goal |
-|------|---------------|--------|------|
-| Week 3 | Clusters only | Logistic | Baseline |
-| Week 4 | Clusters + metadata | Logistic | Representation comparison |
-| Week 5 | Face-based heuristic | Threshold rule | Diagnostics |
-| Week 6 | All features combined | Logistic | Final synthesis |
+|------|---------------|-------|------|
+| Week 3 | Clusters only | Logistic regression | Baseline |
+| Week 4 | Clusters + metadata | Multiple models | Representation exploration |
+| Week 5 | Face-based features | Threshold rule + diagnostics | Error analysis |
+| Week 6 (updated) | Clusters + face features | Logistic regression | Final comparison (visual-only) |
 
 This progression demonstrates how representation changes model behavior.
 
@@ -333,48 +274,45 @@ Further deep learning experimentation (e.g., CNN fine-tuning) would increase com
 
 The results suggest:
 
-- Visual clusters capture meaningful protest-related patterns.
-- Contextual media features shift decision boundaries.
-- Face detection provides interpretable but noisy signal.
-- Crowd detection cannot be reduced to a single visual cue.
+- Unsupervised **visual cluster labels** capture meaningful visual regularities associated with crowd presence in this image corpus.
+- Adding **face-derived features** shifts the model toward **higher sensitivity** (higher recall for `iscrowd=1`) with a small trade-off in precision/accuracy.
+- Crowd presence is partially measurable from image-derived representations, but the improvement from face features is **modest**.
 
-Protest framing emerges from a combination of image content and institutional context.
+What a reader should conclude:
+- The pipeline can support **large-scale measurement of crowd presence** (`iscrowd`) in the dataset.
+
+What a reader should NOT conclude:
+- This is not a system for identifying protests or interpreting political meaning from images.
 
 # Scope
 
 This model is intended for:
 
-- Media research
-- Archival filtering of protest images
-- Academic analysis of visual framing
+- Media research on visual framing
+- Archival filtering of **crowd vs non-crowd images** in the corpus
+- Exploratory social science measurement workflows
 
 It is **not** designed for:
 - Real-time surveillance
-- General-purpose crowd detection
+- General-purpose crowd detection outside this dataset
 - High-stakes automated deployment
 
 # Limitations
 
 - Face detection fails in distant or occluded crowds.
 - Cluster labels are unsupervised and may encode noise.
-- Metadata may proxy unobserved institutional bias.
-- Dataset size limits deep learning exploration.
-- Results may not generalize beyond this corpus.
+- The dataset size limits more complex supervised vision models.
+- Results may not generalize beyond this corpus and label definition (`iscrowd`).
 
 ## How to Reproduce (Colab)
 
 ### Requirements
-- Google Colab (Python 3)
-- Data folder (Torres replication) stored in Google Drive
+- Install dependencies: `pip install -r requirements.txt`
+- Torres replication data available in Drive (see link below)
 
-### Steps
-1. Open the notebook:
-   - `notebooks/week3_baseline_models.ipynb`
-
-2. Mount Drive:
-   ```python
-   from google.colab import drive
-   drive.mount('/content/drive')
+### Run order
+1. Main notebook (current): `notebooks/final_model.ipynb`
+2. Weekly notebooks (archive / earlier iterations): see `notebooks/`
 
 ### Links 
 - Colab notebook: Find All Google Colab Notebooks in the "notebooks" folder
