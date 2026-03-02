@@ -8,7 +8,7 @@ The target variable (`iscrowd`) indicates whether an image contains a visible cr
 We evaluate whether **face-derived visual features** add predictive signal beyond an **unsupervised cluster-based image representation**.
 
 ## Live Report (GitHub Pages)
-- **Report URL:** https://TemurAkhtamjonov.github.io/STATS201_project/  (will work after `docs/` is pushed + Pages enabled)
+- **Report URL:** https://TemurAkhtamjonov.github.io/STATS201_project/
 - **Repo:** https://github.com/TemurAkhtamjonov/STATS201_project
 
 ## Research Question
