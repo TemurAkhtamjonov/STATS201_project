@@ -1,7 +1,8 @@
 # Predicting Crowd Presence in News Images
 
 ## Project Overview
-This project predicts **crowd presence** in news images.
+
+This project examines whether machine-learning models can measure visible crowd presence in news images as a component of visual framing.
 
 The target variable (`iscrowd`) indicates whether an image contains a visible crowd. Importantly, this is **not a protest classifier**. The model predicts crowd presence as a visual proxy and does not distinguish protest crowds from other types of gatherings.
 
@@ -10,6 +11,35 @@ We evaluate whether **face-derived visual features** add predictive signal beyon
 ## Live Report (GitHub Pages)
 - **Report URL:** https://TemurAkhtamjonov.github.io/STATS201_project/
 - **Repo:** https://github.com/TemurAkhtamjonov/STATS201_project
+
+## Project Snapshot
+
+This project investigates whether image-derived features can predict visible crowd presence in a corpus of news images.
+
+The final interpretable model combines unsupervised visual cluster labels with face-derived features extracted using MTCNN. Adding face information increased recall for crowd images from **0.788** to **0.879**, while slightly reducing precision and overall accuracy.
+
+This result illustrates an important precision-recall trade-off: the extended model identifies more true crowd images, but also produces more false positives.
+
+### Key Lessons
+
+- Machine-learning performance depends on how a social-science concept is operationalized, not only on model choice.
+- Face count is an interpretable but noisy proxy for crowd visibility.
+- Error analysis is necessary because distant crowds, occlusion, collages, posters, and screens can systematically mislead face-detection models.
+- Reproducibility, theoretical justification, and clear communication are as important as obtaining a working classifier.
+
+### Future Improvements
+
+Future versions of this project could:
+
+- compare alternative operationalizations of crowd visibility;
+- evaluate model stability using repeated stratified splits or cross-validation;
+- test generalization on an independent news-image dataset;
+- reduce dependence on corpus-specific unsupervised cluster labels;
+- improve the final report's visual and editorial polish.
+
+### Individual Contribution
+
+Although the course project allowed groups of up to three students, I completed the implementation, experimentation, analysis, documentation, and repository development independently.
 
 ## Research Question
 - **Substantive:** How can we measure **crowd presence** as a component of visual framing in a large corpus of news images?
