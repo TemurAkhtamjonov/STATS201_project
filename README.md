@@ -65,7 +65,9 @@ Key files used:
 - `capsule/data/Images2/` (images used for face detection)
 
 ## Repository Structure
-- `notebooks/` — weekly notebooks + final model notebook
+- `notebooks/final_model.ipynb` — current visual-only final model (clusters + faces)
+- `notebooks/week6_final_model.ipynb` — archived exploratory model (clusters + outlet/ideology metadata + faces)
+- `notebooks/` — earlier weekly notebooks retained as an archive
 - `figures/` — figures used in the report/presentation
 - `report/` — source report notebook (`final_report.ipynb`)
 - `docs/` — rendered HTML for GitHub Pages (`index.html` + assets)
@@ -265,6 +267,8 @@ Processing steps:
 | Baseline (clusters only) | 0.8718 | 0.6667 | 0.7879 | 0.7222 |
 | Final (clusters + faces) | 0.8590 | 0.6170 | 0.8788 | 0.7250 |
 
+These are the authoritative results for the visual-only final model. The archived `notebooks/week6_final_model.ipynb` records an earlier exploratory model that also used outlet and ideology metadata; its metrics are not the final project results.
+
 Interpretation:
 - Face features **increase recall** (more crowd images detected) and slightly increase F1.
 - Precision and overall accuracy decrease slightly, indicating a recall–precision trade-off.
@@ -339,11 +343,12 @@ pip install -r requirements.txt
 ```
 ### Run order
 1. Main notebook (current): `notebooks/final_model.ipynb`
-2. Weekly notebooks (archive): `notebooks/`
+2. Weekly notebooks (archive): the remaining files in `notebooks/`
 
 ### Notes
 - Recommended: run in Google Colab (Drive mount + default paths).
 - For local runs, update `DATA_DIR` in the setup cell to your local data directory.
+- The install cell uses the pinned versions in `requirements.txt`; restart the runtime after installation if Colab requests it.
 
 ### Expected outputs
 1. `figures/facecount_by_label_boxplot.png`
